@@ -1,0 +1,82 @@
+#!/usr/bin/env ruby
+
+require "optparse"
+
+require "bundler/setup"
+require "congress_forms"
+
+require "dotenv/load"
+
+unless ENV["CWC_API_KEY"].nil?
+  Cwc::Client.configure(
+    api_key: ENV["CWC_API_KEY"],
+    host: ENV["CWC_HOST"],
+    delivery_agent: ENV["CWC_DELIVERY_AGENT"],
+    delivery_agent_ack_email: ENV["CWC_DELIVERY_AGENT_ACK_EMAIL"],
+    delivery_agent_contact_name: ENV["CWC_DELIVERY_AGENT_CONTACT_NAME"],
+    delivery_agent_contact_email: ENV["CWC_DELIVERY_AGENT_CONTACT_EMAIL"],
+    delivery_agent_contact_phone: ENV["CWC_DELIVERY_AGENT_CONTACT_PHONE"]
+  )
+end
+
+options, params = {}, {}
+
+ENV.each do |k, v|
+  next unless m = k.match(/CONGRESS_FORMS_(.+)/)
+  params["$#{m[1]}"] = v
+end
+
+opts = OptionParser.new do |opts|
+  opts.on("--rep_id REP_ID", "-i", "ID of the representative to message") do |id|
+    options[:rep_id] = id
+  end
+
+  opts.on("--repo DIR", "-r", "Location for unitedstates/contact_congress repository") do |dir|
+    CongressForms.contact_congress_repository = dir
+  end
+
+  opts.on("--param KEY=VALUE", "-p", "e.g. -p NAME_FIRST=Badger") do |pair|
+    key, value = pair.split("=", 2)
+    params["$#{key}"] = value
+  end
+end.parse!
+
+unless options[:rep_id]
+  warn opts.help
+  exit(1)
+end
+
+form = CongressForms::Form.find(options[:rep_id])
+
+form.required_params.each do |param|
+  next if params[param[:value]]
+
+  print("#{param[:value]}: ")
+
+  if param[:options]
+    choices =
+      if param[:options].is_a?(Array)
+        param[:options].zip(param[:options]).to_h
+      else
+        param[:options]
+      end
+
+    puts
+    choices.each_with_index do |choice, i|
+      puts("#{i+1}. #{choice[0]}")
+    end
+
+    puts
+    print("Choice: ")
+    i = $stdin.gets or exit(1)
+
+    choice = choices.to_a[i.to_i-1][0]
+    params[param[:value]] = choice
+    puts
+  else
+    params[param[:value]] = $stdin.gets or exit(1)
+    params[param[:value]].chomp!
+  end
+end
+
+form.fill(params)

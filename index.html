@@ -1,0 +1,77 @@
+<h1 id="congressforms">CongressForms</h1>
+<h2 id="installation">Installation</h2>
+<p>Add this line to your application's Gemfile:</p>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby">gem <span class="st">&#39;congress_forms&#39;</span></code></pre></div>
+<p>And then execute:</p>
+<pre><code>$ bundle</code></pre>
+<p>Or install it yourself as:</p>
+<pre><code>$ gem install congress_forms</code></pre>
+<h3 id="program-dependencies">Program Dependencies</h3>
+<ul>
+<li>google-chrome, git</li>
+</ul>
+<h2 id="usage">Usage</h2>
+<p>To send a message to Congress, begin by creating a form object. Senators should be identified by their <a href="https://www.congress.gov/help/field-values/member-bioguide-ids">BioGuide ID</a>, while Representatives are identified by an office code H<em>XXYY</em>, where XX is their state and YY is their district.</p>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="co"># Form for Senator Kamala Harris (BioGuide H001075)</span>
+<span class="dt">CongressForms</span>::<span class="dt">Form</span>.find(<span class="st">&quot;H001075&quot;</span>)
+
+<span class="co"># Form for CA-13 Represenative Barbara Lee (office code HCA13)</span>
+<span class="dt">CongressForms</span>::<span class="dt">Form</span>.find(<span class="st">&quot;HCA13&quot;</span>)</code></pre></div>
+<p>Each Senator's office may require different fields, provide different options for select menus, etc. You can query the fields required by a particular form by calling <code>CongressForms::Form#required_params</code>.</p>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="co"># List required message parameters</span>
+irb(main)&gt; <span class="dt">CongressForms</span>::<span class="dt">Form</span>.find(<span class="st">&quot;H001075&quot;</span>).required_params
+[
+  <span class="co"># Required text fields</span>
+  { <span class="st">:value</span> =&gt; <span class="st">&quot;$NAME_FIRST&quot;</span>, <span class="st">:max_length</span> =&gt; <span class="dv">nil</span> },
+  { <span class="st">:value</span> =&gt; <span class="st">&quot;$NAME_LAST&quot;</span>, <span class="st">:max_length</span> =&gt; <span class="dv">nil</span> },
+
+  <span class="co"># Required multiple choice field</span>
+  { <span class="st">:value</span> =&gt; <span class="st">&quot;$NAME_PREFIX&quot;</span>, <span class="st">:options_hash</span> =&gt; [<span class="st">&quot;Mr.&quot;</span>, <span class="st">&quot;Ms.&quot;</span>, <span class="st">&quot;Mrs.&quot;</span>, ...] },
+
+  <span class="co"># Required multiple choice field with distinct labels and values</span>
+  {
+    <span class="st">:value</span> =&gt; <span class="st">&quot;$TOPIC&quot;</span>, <span class="st">:options_hash</span> =&gt; {
+      <span class="st">&quot;Abortion&quot;</span> =&gt; <span class="st">&quot;943AD4D7-5056-A066-60A5-D652A671D70E&quot;</span>,
+      <span class="st">&quot;Agriculture&quot;</span> =&gt; <span class="st">&quot;943AD58A-5056-A066-60BD-A9DBEE1187A1&quot;</span>,
+      <span class="st">&quot;Animal Welfare&quot;</span> =&gt; <span class="st">&quot;943AD622-5056-A066-6065-1B45E2F6F45D&quot;</span>,
+    }
+  },
+ ...
+]
+...</code></pre></div>
+<p>Pass the required values, in a hash, to <code>CongressForms::Form#fill</code> to send the message.</p>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby">form = <span class="dt">CongressForms</span>::<span class="dt">Form</span>.find(<span class="st">&quot;H001075&quot;</span>)
+
+form.fill(
+  <span class="st">&quot;$NAME_FIRST&quot;</span> =&gt; <span class="st">&quot;...&quot;</span>,
+  <span class="st">&quot;$NAME_LAST&quot;</span> =&gt; <span class="st">&quot;...&quot;</span>,
+  <span class="st">&quot;$MESSAGE&quot;</span> =&gt; <span class="st">&quot;...&quot;</span>,
+  ...
+)</code></pre></div>
+<p>For Senate offices, this will fill out the representative's contact form by with a headless instance of Google Chrome. For House offices, messages are submitted through the Communicating with Congress (CWC) API.</p>
+<h3 id="cli-usage">CLI Usage</h3>
+<p>You can also send messages from the command line:</p>
+<pre><code>$ bin/congress_forms --help
+Usage: congress_forms [options]
+    -i, --rep_id REP_ID              ID of the representative to message
+    -r, --repo DIR                   Location for unitedstates/contact_congress repository
+    -p, --param KEY=VALUE            e.g. -p NAME_FIRST=Badger</code></pre>
+<h2 id="operation-and-configuration">Operation and Configuration</h2>
+<p>Senate messages rely on contact form details tracked by the <a href="https://github.com/unitedstates/contact-congress">unitedstates/contact-congress</a> project. This repo is cloned into a temporary directory by default. You can configure CongressForms to use an existing/persistent direcory with</p>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="dt">CongressForms</span>.contact_congress_repository = <span class="st">&quot;data/contact_congress&quot;</span></code></pre></div>
+<p>A <code>git pull</code> is performed every now and then in this direcory, to keep the form details up to date. You can disable this behavior with</p>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="dt">CongressForms</span>.auto_update_contact_congress = <span class="dv">false</span></code></pre></div>
+<p>House messages are submitted through the <a href="https://www.house.gov/doing-business-with-the-house/communicating-with-congress-cwc">Communicating with Congress</a> API. You will need to complete the vendor application process, then configure the API client with</p>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="dt">Cwc</span>::<span class="dt">Client</span>.configure(
+  <span class="st">api_key: </span><span class="dt">ENV</span>[<span class="st">&quot;CWC_API_KEY&quot;</span>],
+  <span class="st">host: </span><span class="dt">ENV</span>[<span class="st">&quot;CWC_HOST&quot;</span>],
+  <span class="st">delivery_agent: </span><span class="dt">ENV</span>[<span class="st">&quot;CWC_DELIVERY_AGENT&quot;</span>],
+  <span class="st">delivery_agent_ack_email: </span><span class="dt">ENV</span>[<span class="st">&quot;CWC_DELIVERY_AGENT_ACK_EMAIL&quot;</span>],
+  <span class="st">delivery_agent_contact_name: </span><span class="dt">ENV</span>[<span class="st">&quot;CWC_DELIVERY_AGENT_CONTACT_NAME&quot;</span>],
+  <span class="st">delivery_agent_contact_email: </span><span class="dt">ENV</span>[<span class="st">&quot;CWC_DELIVERY_AGENT_CONTACT_EMAIL&quot;</span>],
+  <span class="st">delivery_agent_contact_phone: </span><span class="dt">ENV</span>[<span class="st">&quot;CWC_DELIVERY_AGENT_CONTACT_PHONE&quot;</span>]
+)</code></pre></div>
+<h2 id="contributing">Contributing</h2>
+<p>Bug reports and pull requests are welcome on GitHub at <a href="https://github.com/efforg/congress_forms" class="uri">https://github.com/efforg/congress_forms</a>.</p>
+<h2 id="license">License</h2>
+<p>The gem is available as open source under the terms of the <a href="http://opensource.org/licenses/MIT">MIT License</a>.</p>
