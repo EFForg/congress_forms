@@ -39,7 +39,7 @@ opts = OptionParser.new do |opts|
     key, value = pair.split("=", 2)
     params["$#{key}"] = value
   end
-end.parse!
+end.tap(&:parse!)
 
 unless options[:rep_id]
   warn opts.help
