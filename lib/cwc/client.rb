@@ -114,14 +114,14 @@ module Cwc
     end
 
     def deliver(message)
-      RestClient.post action("/v2/message"), message.to_xml, { content_type: :xml }
+      post action("/v2/message"), message.to_xml
       true
     rescue RestClient::BadRequest => e
       raise BadRequest.new(e)
     end
 
     def validate(message)
-      RestClient.post action("/v2/validate"), message.to_xml, { content_type: :xml }
+      post action("/v2/validate"), message.to_xml
       true
     rescue RestClient::BadRequest => e
       raise BadRequest.new(e)
@@ -145,11 +145,25 @@ module Cwc
 
     private
 
+    def get(url)
+      verify = !["false", "0"].include?(ENV["CWC_VERIFY_SSL"])
+      headers = { host: ENV["CWC_HOST_HEADER"] }.reject{ |_, v| v.nil? }
+      RestClient::Resource.new(url, verify_ssl: verify).get(headers)
+    end
+
+    def post(url, message)
+      verify = !["false", "0"].include?(ENV["CWC_VERIFY_SSL"])
+      headers = { content_type: :xml, host: ENV["CWC_HOST_HEADER"] }.
+                reject{ |_, v| v.nil? }
+      RestClient::Resource.new(url, verify_ssl: verify).
+        post(message, headers)
+    end
+
     def offices
       if options[:host] =~ %r{^https://cwc.house.gov}
           Cwc::OfficeCodes.map{ |code| Office.new(code) }
       else
-        response = RestClient.get action("/offices")
+        response = get action("/offices")
         JSON.parse(response.body).map{ |code| Office.new(code) }
       end
     end
