@@ -73,6 +73,8 @@ module CongressForms
       actions.each do |action|
         action.perform(browser, values)
       end
+    rescue Capybara::CapybaraError => e
+      raise Error, e.message
     end
   end
 end
