@@ -118,6 +118,24 @@ Cwc::Client.configure(
 )
 ```
 
+### CWC Concerns
+
+The CWC API requires that you connect from a whitelisted IP address. This is true even for the test endpoint, which makes development and testing of the API client tricky.
+
+If you have a whitelisted IP, you can use SSH port forwarding to tunnel requests to CWC through the approved server. Keep this command running in a console:
+
+```
+$ ssh -L [port]:test-cwc.house.gov:443 [server]
+```
+
+Use `https://localhost:[port]/` as your CWC host, and define these environment variables:
+
+```
+CWC_VERIFY_SSL=false
+CWC_HOST_HEADER=test-cwc.house.gov
+```
+
+(substitute `[server]` and `[port]` with your own values)
 
 ## Contributing
 
