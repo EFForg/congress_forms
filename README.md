@@ -74,7 +74,7 @@ form.fill(
 )
 ```
 
-For Senate offices, this will fill out the representative's contact form by with a headless instance of Google Chrome. For House offices, messages are submitted through the Communicating with Congress (CWC) API.
+For Senate offices, this will fill out the representative's contact form with a headless instance of Google Chrome. For House offices, messages are submitted through the Communicating with Congress (CWC) API.
 
 
 ### CLI Usage
