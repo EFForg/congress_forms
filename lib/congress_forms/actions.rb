@@ -134,13 +134,13 @@ module CongressForms
     class Choose < Base
       def perform(browser, params={})
         if options.any?
-          browser.find(selector).set(true)
-        else
           user_value = params[value]
 
           browser.
             find(selector + '[value="' + escape_css_attribute(user_value) + '"]').
             set(true)
+        else
+          browser.find(selector).set(true)
         end
       end
     end

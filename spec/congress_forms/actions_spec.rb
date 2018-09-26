@@ -319,20 +319,21 @@ describe CongressForms::Actions do
     }
 
     context "#options is present" do
-      before { choose.options = { dummy: true } }
+      before {
+        choose.options = { dummy: true }
+        choose.value = "$FIRST_NAME"
+      }
 
-      it "should choose #selector" do
-        choose.selector << '[value="1"]'
-        choose.perform(browser)
+      it "should choose the right input" do
+        choose.perform(browser, "$FIRST_NAME" => "1")
         expect(browser.find("input:checked").value).to eq("1")
       end
     end
 
     context "#options is not present" do
-      before { choose.value = "$FIRST_NAME" }
-
-      it "should choose the right input" do
-        choose.perform(browser, "$FIRST_NAME" => "1")
+      it "should choose #selector" do
+        choose.selector << '[value="1"]'
+        choose.perform(browser)
         expect(browser.find("input:checked").value).to eq("1")
       end
     end
