@@ -42,7 +42,13 @@ module CongressForms
     end
 
     def self.create_browser
-      Capybara::Session.new(:headless_chrome)
+      if ENV["HEADLESS"] == "0"
+        Capybara::Session.new(:chrome)
+      else
+        Capybara::Session.new(:headless_chrome)
+      end.tap do |browser|
+        browser.current_window.resize_to(1920, 1080)
+      end
     end
 
     def initialize(actions = [], bioguide: nil,
