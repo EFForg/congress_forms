@@ -69,8 +69,10 @@ module CongressForms
       end      
     end
 
-    def fill(values, browser: self.class.create_browser)
+    def fill(values, browser: self.class.create_browser, submit: true)
       actions.each do |action|
+        break if action.submit? && !submit
+
         action.perform(browser, values)
       end
     rescue Capybara::CapybaraError => e

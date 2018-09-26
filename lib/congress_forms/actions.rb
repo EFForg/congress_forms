@@ -43,6 +43,10 @@ module CongressForms
       def escape_css_attribute(v)
         v.gsub('"', '\"')
       end
+
+      def submit?
+        "#{value} #{selector}".match(/submit/i)
+      end
     end
 
     class Visit < Base
