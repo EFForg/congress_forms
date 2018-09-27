@@ -2,6 +2,7 @@ module CongressForms
   class Form
     attr_accessor :bioguide, :actions
     attr_accessor :success_status, :success_content
+    attr_accessor :updated_at
 
     @@repo = nil
 
@@ -37,7 +38,8 @@ module CongressForms
         success_status:
           yaml.dig("contact_form", "success", "headers", "status"),
         success_content:
-          yaml.dig("contact_form", "success", "body", "contains")
+          yaml.dig("contact_form", "success", "body", "contains"),
+        updated_at: File.mtime(file)
       )
     end
 
@@ -53,11 +55,13 @@ module CongressForms
 
     def initialize(actions = [], bioguide: nil,
                    success_status: nil,
-                   success_content: nil)
+                   success_content: nil,
+                   updated_at: nil)
       self.bioguide = bioguide
       self.actions = actions
       self.success_status = success_status
       self.success_content = success_content
+      self.updated_at = updated_at
     end
 
     def required_params
