@@ -76,3 +76,6 @@ def cwc_message_params
     }
   }
 end
+
+Cwc::Client.configure(cwc_client_params)
+
