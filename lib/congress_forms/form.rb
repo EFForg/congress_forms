@@ -20,7 +20,6 @@ module CongressForms
       else
         parse(repo.find("members/#{bioguide}.yaml"))
       end
-
     rescue Errno::ENOENT => e
       nil
     end

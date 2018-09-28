@@ -35,13 +35,13 @@ module CongressForms
     end
 
     def initialized?
-      File.exists?(location.join(".git"))
+      File.exists?(git_dir)
     end
 
     def update!
       system(
         "git",
-        "--git-dir", location.join(".git").to_s,
+        "--git-dir", git_dir.to_s,
         "pull",
         "--quiet",
         "--ff-only"
@@ -56,14 +56,28 @@ module CongressForms
     end
 
     def age
-      repo_touched_at = File.mtime(location.join(".git", "HEAD"))
+      repo_touched_at = File.mtime(git_dir.join("HEAD"))
       Time.now - repo_touched_at
     end
 
     def find(file)
       clone unless initialized?
       update if auto_update? && age > 5*60 # update every 5m
+
+      repo_file = system(
+        "git",
+        "--git-dir", git_dir.to_s,
+        "ls-files", "--error-unmatch",
+        "--", file
+      )
+
+      raise Errno::ENOENT, file unless repo_file
+
       location.join(file).to_s
+    end
+
+    def git_dir
+      location.join(".git")
     end
   end
 end
