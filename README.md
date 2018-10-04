@@ -144,5 +144,5 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/efforg
 
 ## License
 
-The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
+The gem is available as open source under the terms of the [GPLv3 License](https://github.com/EFForg/congress_forms/blob/master/LICENSE.txt).
 
