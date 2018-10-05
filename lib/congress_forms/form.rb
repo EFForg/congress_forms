@@ -19,5 +19,17 @@ module CongressForms
     rescue Errno::ENOENT => e
       nil
     end
+
+    def missing_required_params(params)
+      missing_parameters = []
+
+      required_params.each do |field|
+        unless params.include?(field[:value])
+          missing_parameters << field[:value]
+        end
+      end
+
+      missing_parameters.empty? ? nil : missing_parameters.any
+    end
   end
 end
