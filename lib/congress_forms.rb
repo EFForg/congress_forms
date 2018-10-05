@@ -42,6 +42,7 @@ module CongressForms
   Error = Class.new(Exception)
 
   autoload :Form, "congress_forms/form"
+  autoload :WebForm, "congress_forms/web_form"
   autoload :CwcForm, "congress_forms/cwc_form"
   autoload :Actions, "congress_forms/actions"
 
