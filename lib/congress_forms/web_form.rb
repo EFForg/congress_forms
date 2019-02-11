@@ -59,13 +59,43 @@ module CongressForms
     end
 
     def fill(values, browser: self.class.create_browser, submit: true)
+      log("#{bioguide} fill")
+
       actions.each do |action|
         break if action.submit? && !submit
 
         action.perform(browser, values)
       end
-    rescue Capybara::CapybaraError => e
-      raise Error, e.message
+
+      log("done: success")
+    rescue Capybara::CapybaraError, Selenium::WebDriver::Error::WebDriverError => e
+      log("done: error")
+
+      error = Error.new(e.message)
+      error.set_backtrace(e.backtrace)
+
+      if screenshot = ENV["CONGRESS_FORMS_SCREENSHOT_LOCATION"]
+        error.screenshot = "#{screenshot}/#{SecureRandom.hex(16)}.png"
+        browser.save_screenshot(error.screenshot, full: true)
+      end
+
+      raise error
+    end
+
+    protected
+
+    def log(message)
+      if defined?(Rails)
+        Rails.logger.debug(message)
+      end
+
+      if defined?(Raven)
+        unless Raven.context.extra.key?(:fill_log)
+          Raven.extra_context(fill_log: "")
+        end
+
+        Raven.context.extra[:fill_log] << message << "\n"
+      end
     end
   end
 end

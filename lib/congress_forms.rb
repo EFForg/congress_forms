@@ -39,7 +39,9 @@ Capybara.register_driver :headless_chrome do
 end
 
 module CongressForms
-  Error = Class.new(Exception)
+  Error = Class.new(Exception) do
+    attr_accessor :screenshot
+  end
 
   autoload :Form, "congress_forms/form"
   autoload :WebForm, "congress_forms/web_form"
