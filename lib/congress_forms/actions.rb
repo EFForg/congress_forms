@@ -47,6 +47,12 @@ module CongressForms
       def submit?
         "#{value} #{selector}".match(/submit/i)
       end
+
+      def inspect
+        s = "#{self.class.name.sub(/^CongressForms::Actions::/, '')}("
+        s << "#{selector.inspect}, " unless selector.nil?
+        s << value.inspect << ")"
+      end
     end
 
     class Visit < Base
