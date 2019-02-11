@@ -10,11 +10,11 @@ module CongressForms
         end
     end
 
-    def self.find(bioguide)
-      if Cwc::Client.new.office_supported?(bioguide)
-        CwcForm.new(bioguide)
+    def self.find(form_id)
+      if Cwc::Client.new.office_supported?(form_id)
+        CwcForm.new(form_id)
       else
-        WebForm.parse(repo.find("members/#{bioguide}.yaml"))
+        WebForm.parse(repo.find("members/#{form_id}.yaml"))
       end
     rescue Errno::ENOENT => e
       nil
