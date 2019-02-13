@@ -137,6 +137,10 @@ CWC_HOST_HEADER=test-cwc.house.gov
 
 (substitute `[server]` and `[port]` with your own values)
 
+### Disabling headless mode
+
+Chrome can be run in windowed mode by setting the environment variable `HEADLESS=0`.
+
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/efforg/congress_forms.
