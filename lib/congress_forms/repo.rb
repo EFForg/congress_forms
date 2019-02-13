@@ -10,6 +10,7 @@ module CongressForms
 
     def initialize(remote)
       @remote = remote
+      @semaphore = Mutex.new
       self.auto_update = true
     end
 
@@ -61,23 +62,34 @@ module CongressForms
     end
 
     def find(file)
-      clone unless initialized?
-      update if auto_update? && age > 5*60 # update every 5m
+      lock do
+        clone unless initialized?
 
-      repo_file = system(
-        "git",
-        "--git-dir", git_dir.to_s,
-        "ls-files", "--error-unmatch",
-        "--", file
-      )
+        update if auto_update? && age > 5*60 # update every 5m
 
-      raise Errno::ENOENT, file unless repo_file
+        repo_file = system(
+          "git",
+          "--git-dir", git_dir.to_s,
+          "ls-files", "--error-unmatch",
+          "--", file
+        )
 
-      location.join(file).to_s
+        raise Errno::ENOENT, file unless repo_file
+
+        path = location.join(file).to_s
+
+        [File.read(path), File.mtime(path)]
+      end
     end
 
     def git_dir
       location.join(".git")
+    end
+
+    private
+
+    def lock(&block)
+      @semaphore.synchronize(&block)
     end
   end
 end

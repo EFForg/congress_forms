@@ -14,7 +14,8 @@ module CongressForms
       if Cwc::Client.new.office_supported?(form_id)
         CwcForm.new(form_id)
       else
-        WebForm.parse(repo.find("members/#{form_id}.yaml"))
+        content, timestamp = repo.find("members/#{form_id}.yaml")
+        WebForm.parse(content, updated_at: timestamp)
       end
     rescue Errno::ENOENT => e
       nil

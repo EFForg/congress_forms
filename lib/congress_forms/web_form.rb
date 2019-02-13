@@ -4,8 +4,8 @@ module CongressForms
     attr_accessor :success_status, :success_content
     attr_accessor :updated_at
 
-    def self.parse(file)
-      yaml = YAML.load_file(file)
+    def self.parse(spec, attrs={})
+      yaml = YAML.load(spec)
 
       actions = yaml.dig("contact_form", "steps").map do |step|
         Actions.build(step)
@@ -13,12 +13,13 @@ module CongressForms
 
       new(
         actions,
-        bioguide: yaml["bioguide"],
-        success_status:
-          yaml.dig("contact_form", "success", "headers", "status"),
-        success_content:
-          yaml.dig("contact_form", "success", "body", "contains"),
-        updated_at: File.mtime(file)
+        attrs.merge(
+          bioguide: yaml["bioguide"],
+          success_status:
+            yaml.dig("contact_form", "success", "headers", "status"),
+          success_content:
+            yaml.dig("contact_form", "success", "body", "contains"),
+        )
       )
     end
 
