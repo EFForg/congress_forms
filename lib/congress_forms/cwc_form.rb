@@ -1,5 +1,5 @@
 module CongressForms
-  class CwcForm
+  class CwcForm < Form
     attr_accessor :office_code
 
     def initialize(office_code)
