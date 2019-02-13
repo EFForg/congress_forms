@@ -58,11 +58,11 @@ module CongressForms
       end
     end
 
-    def fill(values, browser: self.class.create_browser, submit: true)
+    def fill(values, browser: self.class.create_browser, validate_only: false)
       log("#{bioguide} fill")
 
       actions.each do |action|
-        break if action.submit? && !submit
+        break if action.submit? && validate_only
 
         action.perform(browser, values)
       end

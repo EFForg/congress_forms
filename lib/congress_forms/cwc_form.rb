@@ -14,7 +14,7 @@ module CongressForms
       Cwc::RequiredJson.fetch("required_actions")
     end
 
-    def fill(values, campaign_tag: nil, organization: nil, browser: nil)
+    def fill(values, campaign_tag: nil, organization: nil, browser: nil, validate_only: false)
       params = {
         campaign_id: campaign_tag || SecureRandom.hex(16),
 
