@@ -3,7 +3,8 @@ require "spec_helper"
 describe CongressForms::WebForm do
   describe ".parse" do
     it "should build a Form from the yaml definition" do
-      file, step, action = double, double, double
+      spec, step, action = double, double, double
+
       yaml = {
         "bioguide" => double,
         "contact_form" => {
@@ -16,18 +17,22 @@ describe CongressForms::WebForm do
       }
 
       expect(YAML).
-        to receive(:load_file).with(file).and_return(yaml)
+        to receive(:load).with(spec).and_return(yaml)
+
       expect(CongressForms::Actions).
         to receive(:build).with(step).and_return(action)
-      expect(File).to receive(:mtime).with(file).and_return(Time.now)
 
-      form = CongressForms::WebForm.parse(file)
+      timestamp = double
+
+      form = CongressForms::WebForm.parse(spec, updated_at: timestamp)
+
       expect(form.bioguide).to eq(yaml["bioguide"])
       expect(form.actions).to eq([action])
       expect(form.success_status).
         to eq(yaml.dig("contact_form", "success", "headers", "status"))
       expect(form.success_content).
         to eq(yaml.dig("contact_form", "success", "body", "contains"))
+      expect(form.updated_at).to eq(timestamp)
     end
   end
 

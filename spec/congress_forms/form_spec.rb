@@ -29,19 +29,20 @@ describe CongressForms::Form do
       }
 
       it "should lookup the form file and parse it" do
-        bioguide, file, form = SecureRandom.hex(8), double, double
+        form_id = SecureRandom.hex(8)
+        file, timestamp, form = double, double, double
 
         expect_any_instance_of(CongressForms::Repo).
           to receive(:find).
-              with("members/#{bioguide}.yaml").
-              and_return(file)
+              with("members/#{form_id}.yaml").
+              and_return([file, timestamp])
 
         expect(CongressForms::WebForm).
           to receive(:parse).
-              with(file).
+              with(file, updated_at: timestamp).
               and_return(form)
 
-        expect(CongressForms::Form.find(bioguide)).to eq(form)
+        expect(CongressForms::Form.find(form_id)).to eq(form)
       end
     end
   end
