@@ -11,7 +11,7 @@ module CongressForms
     end
 
     def required_params
-      Cwc::RequiredJson.fetch("required_actions")
+      Cwc::RequiredJson.fetch("required_actions").map(&:dup)
     end
 
     def fill(values, campaign_tag: nil, organization: nil, browser: nil, validate_only: false)
