@@ -104,7 +104,7 @@ A `git pull` is performed every now and then in this direcory, to keep the form 
 CongressForms.auto_update_contact_congress = false
 ```
 
-House messages are submitted through the [Communicating with Congress](https://www.house.gov/doing-business-with-the-house/communicating-with-congress-cwc) API. You will need to complete the vendor application process, then configure the API client with
+House messages are submitted through the [Communicating with Congress](https://www.house.gov/doing-business-with-the-house/communicating-with-congress-cwc) API. To send messages to the House of Representatives, You will need to complete the vendor application process, then configure the API client with
 
 ```ruby
 Cwc::Client.configure(

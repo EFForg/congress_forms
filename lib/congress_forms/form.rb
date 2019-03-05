@@ -11,7 +11,13 @@ module CongressForms
     end
 
     def self.find(form_id)
-      if Cwc::Client.new.office_supported?(form_id)
+      begin
+        cwc_client = Cwc::Client.new
+      rescue KeyError => _
+        nil
+      end
+
+      if cwc_client&.office_supported?(form_id)
         CwcForm.new(form_id)
       else
         content, timestamp = repo.find("members/#{form_id}.yaml")
