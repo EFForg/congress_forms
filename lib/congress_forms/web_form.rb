@@ -110,6 +110,8 @@ module CongressForms
 
         error.screenshot = path
       end
+    rescue Selenium::WebDriver::Error::NoSuchDriverError => e
+      nil
     end
   end
 end
