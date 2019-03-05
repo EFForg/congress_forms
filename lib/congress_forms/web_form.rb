@@ -63,6 +63,8 @@ module CongressForms
       log("#{bioguide} fill")
 
       actions.each do |action|
+        log(action.inspect)
+
         break if action.submit? && validate_only
 
         action.perform(browser, values)
@@ -75,10 +77,7 @@ module CongressForms
       error = Error.new(e.message)
       error.set_backtrace(e.backtrace)
 
-      if screenshot = ENV["CONGRESS_FORMS_SCREENSHOT_LOCATION"]
-        error.screenshot = "#{screenshot}/#{SecureRandom.hex(16)}.png"
-        browser.save_screenshot(error.screenshot, full: true)
-      end
+      attach_screenshot(browser, error)
 
       raise error
     end
@@ -96,6 +95,18 @@ module CongressForms
         end
 
         Raven.context.extra[:fill_log] << message << "\n"
+      end
+    end
+
+    def attach_screenshot(browser, error)
+      if dir = ENV["CONGRESS_FORMS_SCREENSHOT_LOCATION"]
+        random = SecureRandom.hex(16)
+        stamp = Time.now.strftime("%Y-%m-%d_%H:%M:%S")
+
+        path = "#{dir}/#{bioguide}/#{stamp}_#{random}.png"
+        FileUtils.mkdir_p(File.dirname(path))
+
+        browser.save_screenshot(error.screenshot, full: true)
       end
     end
   end
