@@ -106,7 +106,9 @@ module CongressForms
         path = "#{dir}/#{bioguide}/#{stamp}_#{random}.png"
         FileUtils.mkdir_p(File.dirname(path))
 
-        browser.save_screenshot(error.screenshot, full: true)
+        browser.save_screenshot(path, full: true)
+
+        error.screenshot = path
       end
     end
   end
