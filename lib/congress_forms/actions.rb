@@ -70,7 +70,7 @@ module CongressForms
     class FillIn < Base
       def perform(browser, params={})
         if placeholder_value?
-          value = params.fetch(self.value).gsub("\t", "    ")
+          value = params[self.value]&.gsub("\t", "    ") || ""
 
           maxl = options["max_length"]
           value = value[0, (0.95 * maxl).floor] if maxl
