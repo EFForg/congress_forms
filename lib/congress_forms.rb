@@ -24,6 +24,25 @@ Capybara.register_driver :chrome do
   Capybara::Selenium::Driver.new(nil, browser: :chrome)
 end
 
+Capybara.register_driver :remote do
+  Capybara::Selenium::Driver.new(
+    nil,
+    browser: :remote,
+    url: ENV["WEBDRIVER_HOST"],
+    desired_capabilities: {
+      browserName: "chrome",
+      cssSelectorsEnabled: true,
+      javascriptEnabled: true,
+      nativeEvents: false,
+      rotatable: false,
+      takesScreenshot: true,
+      chromeOptions: {
+        args: %w(headless new-window no-sandbox disable-dev-shm-usage disable-gpu window-size=1200,1400)
+      }
+    }
+  )
+end
+
 Capybara.register_driver :headless_chrome do
   capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(
     chromeOptions: {

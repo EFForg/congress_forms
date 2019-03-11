@@ -26,6 +26,8 @@ module CongressForms
     def self.create_browser
       if ENV["HEADLESS"] == "0"
         Capybara::Session.new(:chrome)
+      elsif ENV["WEBDRIVER_HOST"] && !ENV["WEBDRIVER_HOST"].empty?
+        Capybara::Session.new(:remote)
       else
         Capybara::Session.new(:headless_chrome)
       end.tap do |browser|
