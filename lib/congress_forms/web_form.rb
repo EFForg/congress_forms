@@ -65,9 +65,9 @@ module CongressForms
       log("#{bioguide} fill")
 
       actions.each do |action|
-        log(action.inspect)
-
         break if action.submit? && validate_only
+
+        log(action.inspect)
 
         action.perform(browser, values)
       end
