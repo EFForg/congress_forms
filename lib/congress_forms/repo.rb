@@ -42,7 +42,7 @@ module CongressForms
     def update!
       system(
         "git",
-        "--git-dir", git_dir.to_s,
+        "-C", location.to_s,
         "pull",
         "--quiet",
         "--ff-only"
@@ -69,7 +69,7 @@ module CongressForms
 
         repo_file = system(
           "git",
-          "--git-dir", git_dir.to_s,
+          "-C", location.to_s,
           "ls-files", "--error-unmatch",
           "--", file
         )
