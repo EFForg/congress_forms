@@ -82,6 +82,8 @@ module CongressForms
       attach_screenshot(browser, error)
 
       raise error
+    ensure
+      browser.driver.quit
     end
 
     protected
