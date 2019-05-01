@@ -95,7 +95,8 @@ module CongressForms
 
         browser.within(selector) do
           if placeholder_value?
-            option_value = user_value
+            option_value = user_value or
+              raise Error, "Required field missing: #{value}"
           else
             option_value = value
           end
