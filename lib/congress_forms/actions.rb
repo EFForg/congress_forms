@@ -1,4 +1,6 @@
 module CongressForms
+  UnsupportedAction = Class.new(Error)
+
   module Actions
     DEFAULT_FIND_WAIT_TIME = 5
 
@@ -6,7 +8,12 @@ module CongressForms
       key = step.keys.first
 
       const_name = key.capitalize.gsub(/_(\w)/){ |m| m[1].upcase }
-      klass = const_get(const_name, false)
+
+      begin
+        klass = const_get(const_name, false)
+      rescue NameError => e
+        raise UnsupportedAction, "#{const_name} handler missing"
+      end
 
       if Visit == klass
         Array(klass.new("value" => step[key]))
