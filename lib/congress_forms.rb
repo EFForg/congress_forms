@@ -1,6 +1,7 @@
 require "yaml"
 
 require "capybara"
+require "webdrivers/chromedriver"
 require "selenium/webdriver"
 
 require "congress_forms/version"
