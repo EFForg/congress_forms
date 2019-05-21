@@ -83,7 +83,7 @@ module CongressForms
 
       raise error
     ensure
-      browser.driver.quit
+      browser.quit
     end
 
     protected
