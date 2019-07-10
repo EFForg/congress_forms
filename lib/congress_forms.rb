@@ -44,20 +44,15 @@ Capybara.register_driver :remote do
   )
 end
 
-Capybara.register_driver :headless_chrome do
-  capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(
-    chrome_options: {
-      args: %w(new-window no-sandbox disable-dev-shm-usage disable-gpu window-size=1200,1400).tap do |o|
-        o.push("headless") unless ENV["HEADLESS"] == "0"
-      end
-    }
-  )
+Capybara.register_driver :headless_chrome do |app|
+  Capybara::Selenium::Driver.load_selenium
+  browser_options = ::Selenium::WebDriver::Chrome::Options.new.tap do |opts|
+    opts.args.merge(%w(--new-window --no-sandbox --disable-dev-shm-usage  --window-size=1200,1400))
+    opts.args << '--headless' unless ENV["HEADLESS"] == "0"
+    opts.args << '--disable-gpu' if Gem.win_platform?
+  end
 
-  Capybara::Selenium::Driver.new(
-    nil,
-    browser: :chrome,
-    desired_capabilities: capabilities
-  )
+  Capybara::Selenium::Driver.new(app, browser: :chrome, options: browser_options)
 end
 
 module CongressForms
