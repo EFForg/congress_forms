@@ -1,5 +1,6 @@
 /.env
 /contact_congress
+.byebug_history
 
 /.bundle/
 /.yardoc

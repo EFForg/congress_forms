@@ -89,7 +89,7 @@ form.required_params.each do |param|
 end
 
 begin
-  form.fill(params, submit: options[:submit])
+  form.fill(params, validate_only: !options[:submit])
 rescue Exception => e
   if options[:debug]
     require "pry"

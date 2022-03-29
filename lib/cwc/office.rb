@@ -2,8 +2,18 @@ module Cwc
   class Office
     attr_reader :code
 
-    def initialize(code)
-      @code = code
+    # @param code_or_params [String or Hash]
+    #   house.gov /v2/office returns a simple list of office codes
+    #   senate.gov /api/active_offices returns a list of structured JSON
+    #
+    #   either response can be passed directly to Cwc::Office.new(resp)
+    #
+    def initialize(code_or_params)
+      if code_or_params.is_a?(Hash)
+        @code = code_or_params.fetch("office_code")
+      else
+        @code = code_or_params
+      end
     end
 
     def house?
