@@ -27,12 +27,8 @@ ENV.each do |k, v|
 end
 
 opts = OptionParser.new do |opts|
-  opts.on("--rep_id REP_ID", "-i", "ID of the representative to message") do |id|
+  opts.on("--rep_id REP_ID", "-i", "ID of the senator or representative to message") do |id|
     options[:rep_id] = id
-  end
-
-  opts.on("--repo DIR", "-r", "Location for unitedstates/contact_congress repository") do |dir|
-    CongressForms.contact_congress_repository = dir
   end
 
   opts.on("--param KEY=VALUE", "-p", "e.g. -p NAME_FIRST=Badger") do |pair|
@@ -44,8 +40,7 @@ opts = OptionParser.new do |opts|
     options[:submit] = false
   end
 
-  opts.on("--debug", "Debug mode (HEADLESS=0, binding.pry if an exception is raised)") do
-    ENV["HEADLESS"] = "0"
+  opts.on("--debug", "Debug mode (byebug if an exception is raised)") do
     options[:debug] = true
   end
 end.tap(&:parse!)
@@ -92,8 +87,7 @@ begin
   form.fill(params, validate_only: !options[:submit])
 rescue Exception => e
   if options[:debug]
-    require "pry"
-    binding.pry
+    byebug
   else
     raise e
   end

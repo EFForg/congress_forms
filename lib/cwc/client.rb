@@ -50,7 +50,8 @@ module Cwc
       }
     end
 
-    # Params format
+    # CWC (House) Params format below
+    # SWCW (Senate) Params are the same except for the org
     # {
     #   campaign_id:		String
     #   recipient: {

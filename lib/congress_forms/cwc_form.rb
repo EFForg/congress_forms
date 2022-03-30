@@ -6,10 +6,6 @@ module CongressForms
       self.office_code = office_code
     end
 
-    def updated_at
-      Time.at(0)
-    end
-
     def required_params
       Cwc::RequiredJson.fetch("required_actions").map(&:dup)
     end
