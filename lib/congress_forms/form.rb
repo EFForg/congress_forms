@@ -17,7 +17,7 @@ module CongressForms
         nil
       end
 
-      if cwc_client&.office_supported?(form_id)
+      if (cwc_client&.office_supported?(form_id) rescue nil)
         CwcForm.new(form_id)
       else
         content, timestamp = repo.find("members/#{form_id}.yaml")

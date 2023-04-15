@@ -164,5 +164,16 @@ module CongressForms
         browser.driver.evaluate_script(value)
       end
     end
+
+    class Yield < Base
+      def initialize(*args, &block)
+        @block = block
+        super
+      end
+
+      def perform(browser, params={})
+        @block.call
+      end
+    end
   end
 end

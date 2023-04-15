@@ -88,13 +88,17 @@ form.required_params.each do |param|
   end
 end
 
-begin
-  form.fill(params, submit: options[:submit])
-rescue Exception => e
-  if options[:debug]
-    require "pry"
-    binding.pry
-  else
-    raise e
+if options[:debug]
+  isubmit = form.actions.find_index(&:submit?) || 0
+
+  debug = CongressForms::Actions::Yield.new do
+    puts "fill paused before submit. press return to continue."
+    $stdin.gets
   end
+
+  form.actions.insert(isubmit, debug)
 end
+
+puts
+
+form.fill(params, validate_only: !!!options[:submit])

@@ -91,6 +91,8 @@ module CongressForms
     def log(message)
       if defined?(Rails)
         Rails.logger.debug(message)
+      elsif ENV["HEADLESS"] == "0"
+        warn message
       end
 
       if defined?(Raven)
