@@ -21,6 +21,7 @@ Or install it yourself as:
 ### Program Dependencies
 
   * google-chrome, git
+  * ruby >= 3.0
 
 
 ## Usage

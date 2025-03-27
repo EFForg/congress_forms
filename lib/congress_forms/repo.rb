@@ -36,7 +36,7 @@ module CongressForms
     end
 
     def initialized?
-      File.exists?(git_dir)
+      File.exist?(git_dir)
     end
 
     def update!

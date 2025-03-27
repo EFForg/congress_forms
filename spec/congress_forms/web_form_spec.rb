@@ -40,8 +40,8 @@ describe CongressForms::WebForm do
 
   describe "#fill(values, browser:)" do
     it "should call #perform(browser, values) on each action" do
-      values, browser = double, double
-      actions = [double, double].map(&:as_null_object)
+      values, browser = double('values'), double('browser', quit: true)
+      actions = [double('action 1'), double('action 2')].map(&:as_null_object)
       expect(actions[0]).to receive(:perform).with(browser, values)
       expect(actions[1]).to receive(:perform).with(browser, values)
       CongressForms::WebForm.new(actions).fill(values, browser: browser)
