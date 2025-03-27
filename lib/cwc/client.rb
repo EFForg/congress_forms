@@ -156,7 +156,7 @@ module Cwc
       headers = { content_type: :xml, host: ENV["CWC_HOST_HEADER"] }.
                 reject{ |_, v| v.nil? }
       RestClient::Resource.new(url, verify_ssl: verify).
-        post(message, headers)
+        post(message, **headers)
     end
 
     def offices

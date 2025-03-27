@@ -13,7 +13,7 @@ module CongressForms
 
       new(
         actions,
-        attrs.merge(
+        **attrs.merge(
           bioguide: yaml["bioguide"],
           success_status:
             yaml.dig("contact_form", "success", "headers", "status"),
@@ -35,7 +35,8 @@ module CongressForms
       end
     end
 
-    def initialize(actions = [], bioguide: nil,
+    def initialize(actions = [],
+                   bioguide: nil,
                    success_status: nil,
                    success_content: nil,
                    updated_at: nil)

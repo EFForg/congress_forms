@@ -10,7 +10,9 @@ Gem::Specification.new do |spec|
 
   spec.summary       = %q{...}
   spec.homepage      = "https://github.com/efforg/congress_forms"
-  spec.license       = "GPL-3.0"
+  spec.license       = "GPL-3.0-only"
+
+  spec.required_ruby_version = ">= 3.0"
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   spec.bindir        = "bin"
