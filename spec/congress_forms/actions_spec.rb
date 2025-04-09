@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe CongressForms::Actions do
-  let(:browser) { CongressForms::WebForm.create_browser }
+  browser = CongressForms::WebForm.create_browser
 
   before do
     if defined?(page)
