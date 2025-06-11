@@ -66,7 +66,13 @@ module CongressForms
       log("#{bioguide} fill")
 
       actions.each do |action|
-        break if action.submit? && validate_only
+        if action.submit? && validate_only
+          break if defined?(Rails)
+
+          require "pry"
+          binding.pry
+          exit
+        end
 
         log(action.inspect)
 
