@@ -85,7 +85,7 @@ module CongressForms
           value = self.value
         end
 
-        browser.find(selector).set(value)
+        browser.find(selector, visible: false).set(value)
       end
     end
 
@@ -116,7 +116,7 @@ module CongressForms
 
     class ClickOn < Base
       def perform(browser, params={})
-        browser.find(selector).click
+        browser.find(selector, visible: false).click
       end
     end
 
@@ -125,23 +125,23 @@ module CongressForms
         wait_val = options["wait"] || DEFAULT_FIND_WAIT_TIME
 
         if value.nil?
-          browser.find(selector, wait: wait_val)
+          browser.find(selector, wait: wait_val, visible: false)
         else
           browser.find(selector, text: Regexp.compile(value),
-                                 wait: wait_val)
+                                 wait: wait_val, visible: false)
         end
       end
     end
 
     class Check < Base
       def perform(browser, params={})
-        browser.find(selector).set(true)
+        browser.find(selector, visible: false).set(true)
       end
     end
 
     class Uncheck < Base
       def perform(browser, params={})
-        browser.find(selector).set(false)
+        browser.find(selector, visible: false).set(false)
       end
     end
 
@@ -154,7 +154,7 @@ module CongressForms
             find(selector + '[value="' + escape_css_attribute(user_value) + '"]').
             set(true)
         else
-          browser.find(selector).set(true)
+          browser.find(selector, visible: false).set(true)
         end
       end
     end
