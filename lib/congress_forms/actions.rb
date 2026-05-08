@@ -161,7 +161,7 @@ module CongressForms
 
     class Javascript < Base
       def perform(browser, params={})
-        browser.driver.evaluate_script(value)
+        browser.driver.execute_script(value)
       end
     end
 
